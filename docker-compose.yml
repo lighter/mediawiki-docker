@@ -1,0 +1,35 @@
+#Mysql Persitance data
+mysql-data:
+  image: busybox
+  container_name: mysql-data
+  volumes:
+    - ./mysql-data:/var/lib/mysql
+
+#Mysql container
+mysql:
+  image: mysql
+  container_name: mysql
+  hostname: mysql
+  volumes_from:
+    - mysql-data
+  env_file:
+    - ./mysql.env
+
+#Mediawiki Persistance data
+wiki-data:
+  image: busybox
+  container_name: wiki-data
+  volumes:
+    - ./wiki-data:/var/www/html/wiki
+
+#Mediawiki container
+wiki:
+  image: diouxx/mediawiki
+  container_name: wiki
+  hostname: wiki
+  ports:
+    - 9101:80
+  links:
+    - mysql:mysql
+  volumes_from:
+    - wiki-data
